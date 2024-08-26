@@ -2,13 +2,13 @@
 
 import { useRouter } from "next/navigation";
 
-interface LoginBtnProps {
+interface SignInButtonProps {
   children: React.ReactNode;
   mode?: 'modal' | 'redirect';
   asChild?: boolean;
 };
 
-export default function LoginButton({children, mode='redirect', asChild}: LoginBtnProps) {
+export default function SignInButton({children, mode='redirect', asChild}: SignInButtonProps) {
 
   let router = useRouter();
 
