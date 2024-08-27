@@ -1,9 +1,12 @@
 'use client';
 
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SignInFormSchema, SignInFormType } from "@/schemas";
+import { SignInFormSchema } from "@/schemas";
+import type { SignInFormType } from "@/schemas";
+
 
 import {
   Form, 
@@ -20,8 +23,15 @@ import { Button } from "../ui/button";
 import { FormError } from "@/components/custom_ui/FormError";
 import { FormSuccess } from "@/components/custom_ui/FormSuccess";
 
+import { signin } from "@/actions/signin";
+
 
 export const SignInForm = () => {
+
+  let [success, setSuccess] = useState<string | undefined>('');
+  let [error, setError] = useState<string | undefined>('');
+  let [isPending, startTransition] = useTransition();
+
 
   let form = useForm<SignInFormType>({
     resolver: zodResolver(SignInFormSchema),
@@ -32,7 +42,20 @@ export const SignInForm = () => {
   });
 
   let formSubmitHandler = (data: SignInFormType) => {
-    console.log(data)
+    form.reset();
+    startTransition(() => {
+      signin(data)
+        .then(data => {
+          setError(data.error);
+          setSuccess(data.success)
+        })
+    });
+    // console.log(data);
+  };
+
+  let handleChangeCapture = () => {
+    setSuccess('');
+    setError('');
   };
 
 
@@ -58,14 +81,15 @@ export const SignInForm = () => {
                   <FormControl>
                     <Input
                       type="email" 
-                      placeholder="youremail@example.com" 
+                      placeholder="youremail@example.com"
+                      disabled={isPending}
+                      onChangeCapture={handleChangeCapture} 
                       {...field} 
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-
             />
           </div>
           <div className="space-y-4">
@@ -78,7 +102,9 @@ export const SignInForm = () => {
                   <FormControl>
                     <Input
                       type="password" 
-                      placeholder="*******" 
+                      placeholder="*******"
+                      disabled={isPending}
+                      onChangeCapture={handleChangeCapture} 
                       {...field} 
                     />
                   </FormControl>
@@ -87,9 +113,13 @@ export const SignInForm = () => {
               )}
             />
           </div>
-          <FormError message=""/>
-          <FormSuccess message="" />
-          <Button type="submit" className="w-full">
+          <FormError message={error} />
+          <FormSuccess message={success} />
+          <Button 
+            type="submit" 
+            className="w-full"
+            disabled={isPending}
+          >
             SignIn
           </Button>
         </form>
