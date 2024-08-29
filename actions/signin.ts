@@ -4,10 +4,10 @@ import { AuthFormSchema } from "@/schemas";
 import type { AuthFormType } from '@/schemas';
 
 
-export const signin = async(values: AuthFormType) => {
-  console.log('SignIn action values: ', values);
+export const signin = async(formData: AuthFormType) => {
+  console.log('SignIn action formData: ', formData);
 
-  let validatedResult = AuthFormSchema.safeParse(values);
+  let validatedResult = AuthFormSchema.safeParse(formData);
  
   if (!validatedResult.success) {
     return {error: 'Your credentials invalid. Try again.'};
