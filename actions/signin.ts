@@ -1,13 +1,13 @@
 "use server";
 
-import { SignUpFormSchema } from "@/schemas";
-import type { SignUpFormType } from '@/schemas';
+import { AuthFormSchema } from "@/schemas";
+import type { AuthFormType } from '@/schemas';
 
 
-export const signup = async(values: SignUpFormType) => {
+export const signin = async(values: AuthFormType) => {
   console.log('SignIn action values: ', values);
 
-  let validatedResult = SignUpFormSchema.safeParse(values);
+  let validatedResult = AuthFormSchema.safeParse(values);
  
   if (!validatedResult.success) {
     return {error: 'Your credentials invalid. Try again.'};
