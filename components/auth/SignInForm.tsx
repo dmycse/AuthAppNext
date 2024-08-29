@@ -95,7 +95,7 @@ export const SignInForm = () => {
               control={form.control}
               name="password"
               render={({field}) => (
-                <FormItem>
+                <FormItem className="mb-6">
                   <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input
@@ -115,7 +115,7 @@ export const SignInForm = () => {
           <FormSuccess message={success} />
           <Button 
             type="submit" 
-            className="w-full"
+            className="w-full disabled:opacity-40"
             disabled={isPending}
           >
             SignIn
