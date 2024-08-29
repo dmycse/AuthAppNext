@@ -44,12 +44,10 @@ export const SignUpForm = () => {
 
   let formSubmitHandler = (data: AuthFormType) => {
     form.reset();
-    startTransition(() => {
-      signup(data)
-        .then(data => {
-          setError(data.error);
-          setSuccess(data.success)
-        })
+    startTransition( async () => {
+      let response = await signup(data);
+      setError(response.error);
+      setSuccess(response.success);
     });
     // console.log(data);
   };

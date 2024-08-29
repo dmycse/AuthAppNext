@@ -43,12 +43,10 @@ export const SignInForm = () => {
 
   let formSubmitHandler = (data: AuthFormType) => {
     form.reset();
-    startTransition(() => {
-      signin(data)
-        .then(data => {
-          setError(data.error);
-          setSuccess(data.success)
-        })
+    startTransition(async () => {
+      let response = await signin(data);
+      setError(response.error);
+      setSuccess(response.success);
     });
     // console.log(data);
   };
