@@ -4,8 +4,8 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SignUpFormSchema } from "@/schemas";
-import type { SignUpFormType } from "@/schemas";
+import { AuthFormSchema } from "@/schemas";
+import type { AuthFormType } from "@/schemas";
 
 
 import {
@@ -18,10 +18,10 @@ import {
 } from '@/components/ui/form';
 import { Input } from "@/components/ui/input"
 
-import { CardWrapper } from "@/components/auth/CardWrapper";
+import { CardWrapper } from "@/components/custom_ui/CardWrapper";
 import { Button } from "../ui/button";
-import { FormError } from "@/components/custom_ui/FormError";
-import { FormSuccess } from "@/components/custom_ui/FormSuccess";
+import { FormError } from "@/components/auth/FormError";
+import { FormSuccess } from "@/components/auth/FormSuccess";
 
 import { signup } from "@/actions/signup";
 
@@ -33,8 +33,8 @@ export const SignUpForm = () => {
   let [isPending, startTransition] = useTransition();
 
 
-  let form = useForm<SignUpFormType>({
-    resolver: zodResolver(SignUpFormSchema),
+  let form = useForm<AuthFormType>({
+    resolver: zodResolver(AuthFormSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -42,7 +42,7 @@ export const SignUpForm = () => {
     }
   });
 
-  let formSubmitHandler = (data: SignUpFormType) => {
+  let formSubmitHandler = (data: AuthFormType) => {
     form.reset();
     startTransition(() => {
       signup(data)
