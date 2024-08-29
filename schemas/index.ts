@@ -13,7 +13,7 @@ export const AuthFormSchema = z.object({
   name: z.string().min(2, {
     message: "Name is required"
   }).optional(),
-  email: z.string().email({
+  email: z.string().toLowerCase().email({
     message: "Email is required"
   }),
   password: z.string().min(6, {
