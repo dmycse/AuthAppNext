@@ -1,7 +1,7 @@
 "use server";
 
-import { AuthFormSchema } from "@/schemas";
-import type { AuthFormType } from '@/schemas';
+import { SignUpFormSchema } from "@/schemas";
+import type { SignUpFormType } from '@/schemas';
 
 import { db } from '@/lib/db';
 import { getUserByEmail } from '../utils/user';
@@ -10,10 +10,10 @@ import bcrypt from 'bcrypt';
 let saltRounds = 10;
 
 
-export const signup = async (formData: AuthFormType) => {
+export const signup = async (formData: SignUpFormType) => {
   console.log('SignUp action formData: ', formData);
 
-  let validatedResult = AuthFormSchema.safeParse(formData);
+  let validatedResult = SignUpFormSchema.safeParse(formData);
  
   if (!validatedResult.success) {
     return {error: 'Your credentials invalid. Try again.'};

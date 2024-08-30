@@ -4,8 +4,8 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AuthFormSchema } from "@/schemas";
-import type { AuthFormType } from "@/schemas";
+import { SignInFormSchema } from "@/schemas";
+import type { SignInFormType } from "@/schemas";
 
 
 import {
@@ -33,15 +33,15 @@ export const SignInForm = () => {
   let [isPending, startTransition] = useTransition();
 
 
-  let form = useForm<AuthFormType>({
-    resolver: zodResolver(AuthFormSchema),
+  let form = useForm<SignInFormType>({
+    resolver: zodResolver(SignInFormSchema),
     defaultValues: {
       email: "",
       password: ""
     }
   });
 
-  let formSubmitHandler = (data: AuthFormType) => {
+  let formSubmitHandler = (data: SignInFormType) => {
     form.reset();
     startTransition(async () => {
       let response = await signin(data);
