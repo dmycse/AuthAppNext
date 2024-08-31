@@ -42,7 +42,10 @@ export const SignUpForm = () => {
     }
   });
 
+  let { errors } = form.formState;
+
   let formSubmitHandler = (data: SignUpFormType) => {
+    console.log('SignUpForm data in: ', data);
     form.reset();
     startTransition( async () => {
       let response = await signup(data);
@@ -57,6 +60,8 @@ export const SignUpForm = () => {
     setError('');
   };
 
+  console.log('SignUpForm state: ' , {error, success})
+  console.log('SignUpForm form errors: ', form.formState.errors )
 
   return (
     <CardWrapper
@@ -76,14 +81,15 @@ export const SignUpForm = () => {
               name="name"
               render={({field}) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel className="text-black">Name</FormLabel>
                   <FormControl>
                     <Input
                       type="text" 
                       placeholder="your name"
                       disabled={isPending}
                       onChangeCapture={handleChangeCapture} 
-                      {...field} 
+                      className={errors.name && "border-red-500"} 
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -97,13 +103,14 @@ export const SignUpForm = () => {
               name="email"
               render={({field}) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="text-black">Email</FormLabel>
                   <FormControl>
                     <Input
                       type="email" 
                       placeholder="youremail@example.com"
                       disabled={isPending}
-                      onChangeCapture={handleChangeCapture} 
+                      onChangeCapture={handleChangeCapture}
+                      className={errors.email && "border-red-500"} 
                       {...field} 
                     />
                   </FormControl>
@@ -118,13 +125,14 @@ export const SignUpForm = () => {
               name="password"
               render={({field}) => (
                 <FormItem className="mb-6">
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="text-black">Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password" 
                       placeholder="*******"
                       disabled={isPending}
-                      onChangeCapture={handleChangeCapture} 
+                      onChangeCapture={handleChangeCapture}
+                      className={errors.password && "border-red-500"}  
                       {...field} 
                     />
                   </FormControl>

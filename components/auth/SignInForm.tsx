@@ -51,11 +51,14 @@ export const SignInForm = () => {
     // console.log(data);
   };
 
+  let { errors } = form.formState;
+
   let handleChangeCapture = () => {
     setSuccess('');
     setError('');
   };
 
+  console.log('SignInForm State: ' , {error, success})
 
   return (
     <CardWrapper
@@ -75,14 +78,15 @@ export const SignInForm = () => {
               name="email"
               render={({field}) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="text-black">Email</FormLabel>
                   <FormControl>
                     <Input
                       type="email" 
                       placeholder="youremail@example.com"
                       disabled={isPending}
-                      onChangeCapture={handleChangeCapture} 
-                      {...field} 
+                      onChangeCapture={handleChangeCapture}
+                      className={errors.email && "border-red-500"} 
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -96,13 +100,14 @@ export const SignInForm = () => {
               name="password"
               render={({field}) => (
                 <FormItem className="mb-6">
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="text-black">Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password" 
                       placeholder="*******"
                       disabled={isPending}
                       onChangeCapture={handleChangeCapture} 
+                      className={errors.password && "border-red-500"}
                       {...field} 
                     />
                   </FormControl>
