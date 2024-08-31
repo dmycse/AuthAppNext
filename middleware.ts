@@ -13,14 +13,16 @@ export default auth((req) => {
   let isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   let isAuthRoute = authRoutes.includes(nextUrl.pathname);
   
-  console.log('MIDDLEWARE: ', {
+  console.log("\x1b[36m", 'MIDDLEWARE: ', "\x1b[0m", {
     Auth: req.auth,
+    // NextUrl: req.nextUrl,
     Route: req.nextUrl.pathname,
     isUserSignedIn,
     isApiAuthRoute,
     isPublicRoute,
     isAuthRoute
-  });
+    }
+  );
   
   if (isApiAuthRoute) return;
 
@@ -37,7 +39,6 @@ export default auth((req) => {
   }
 
   
-
   return;
 })
 
