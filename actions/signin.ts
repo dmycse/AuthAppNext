@@ -5,7 +5,7 @@ import type { SignInFormType } from '@/schemas';
 
 
 export const signin = async(formData: SignInFormType) => {
-  console.log('ACTION SignIn: ', formData);
+  console.log('\x1b[33m', 'ACTION SignIn: ', '\x1b[0m', formData);
 
   let validatedResult = SignInFormSchema.safeParse(formData);
  

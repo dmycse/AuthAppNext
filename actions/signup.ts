@@ -11,14 +11,13 @@ let saltRounds = 10;
 
 
 export const signup = async (formData: SignUpFormType) => {
-  console.log('SignUp action formData: ', formData);
+  console.log("\x1b[33m", 'ACTION SignUp formData: ', "\x1b[0m", formData);
 
   let validatedResult = SignUpFormSchema.safeParse(formData);
- 
+  console.log("\x1b[33m", 'ACTION SignUp validatedResult: ', "\x1b[0m", validatedResult);
   if (!validatedResult.success) {
     return {error: 'Your credentials invalid. Try again.'};
   }
-  console.log('validatedResult', validatedResult);
 
   let {name, email, password} = validatedResult.data;
 
@@ -38,5 +37,5 @@ export const signup = async (formData: SignUpFormType) => {
     },
   });
 
-  return {success: 'User created!'};
+  return {success: "Account's been created!"};
 }
