@@ -1,15 +1,14 @@
-import { db } from '../lib/db';
+import { db } from '@/lib/db';
 
 
 export let getUserByEmail = async (email: string) => {
   try {
-
-    let user = await db.user.findUnique({where: { email }});
+    let user = await db.user.findUnique({where: { email: email.toLowerCase()}});
 
     return user;
     
   } catch {
-      return null
+      return null;
   }
 };
 
@@ -21,6 +20,6 @@ export let getUserById = async (id: string) => {
     return user;
     
   } catch {
-      return null
+      return null;
   }
 };

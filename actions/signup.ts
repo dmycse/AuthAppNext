@@ -4,10 +4,8 @@ import { SignUpFormSchema } from "@/schemas";
 import type { SignUpFormType } from '@/schemas';
 
 import { db } from '@/lib/db';
-import { getUserByEmail } from '../utils/user';
-
-import bcrypt from 'bcrypt';
-let saltRounds = 10;
+import { getUserByEmail } from '@/utils/user';
+import { createPasswordHash } from "@/utils/pass";
 
 
 export const signup = async (formData: SignUpFormType) => {
@@ -27,12 +25,12 @@ export const signup = async (formData: SignUpFormType) => {
     return {error: 'Email is already taken!'};
   }
 
-  let hashedPassword = await bcrypt.hash(password, saltRounds);
+  let hashedPassword = await createPasswordHash(password);
 
   await db.user.create({
     data: {
       name,
-      email,
+      email: email.toLowerCase(),
       password: hashedPassword 
     },
   });
