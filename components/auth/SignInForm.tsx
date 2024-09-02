@@ -43,7 +43,7 @@ export const SignInForm = () => {
 
   let formSubmitHandler = (data: SignInFormType) => {
     console.log('SIGNIN Form Input data: ', data);
-    form.reset();
+    // form.reset();
     startTransition(async () => {
       let response = await signin(data);
       console.log('SIGNIN Form Action response: ', response);
@@ -111,6 +111,7 @@ export const SignInForm = () => {
                     <Input
                       type="password" 
                       placeholder="*******"
+                      pass
                       disabled={isPending}
                       onChangeCapture={handleChangeCapture} 
                       className={errors.password && "border-red-500"}

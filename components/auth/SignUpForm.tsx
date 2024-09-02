@@ -130,6 +130,7 @@ export const SignUpForm = () => {
                     <Input
                       type="password" 
                       placeholder="*******"
+                      pass
                       disabled={isPending}
                       onChangeCapture={handleChangeCapture}
                       className={errors.password && "border-red-500"}  
