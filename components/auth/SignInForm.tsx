@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SignInFormSchema } from "@/schemas";
 import type { SignInFormType } from "@/schemas";
 
-
 import {
   Form, 
   FormControl, 
@@ -16,12 +15,13 @@ import {
   FormLabel, 
   FormMessage 
 } from '@/components/ui/form';
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 
 import { CardWrapper } from "@/components/custom_ui/CardWrapper";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/auth/FormError";
 import { FormSuccess } from "@/components/auth/FormSuccess";
+
 
 import { signin } from "@/actions/signin";
 
@@ -42,13 +42,17 @@ export const SignInForm = () => {
   });
 
   let formSubmitHandler = (data: SignInFormType) => {
+    console.log('SIGNIN Form Input data: ', data);
     form.reset();
     startTransition(async () => {
       let response = await signin(data);
-      setError(response.error);
-      setSuccess(response.success);
+      console.log('SIGNIN Form Action response: ', response);
+      if (response) {
+        setError(response.error);
+        setSuccess(response.success);
+      }
+      return;
     });
-    // console.log(data);
   };
 
   let { errors } = form.formState;
@@ -58,7 +62,9 @@ export const SignInForm = () => {
     setError('');
   };
 
-  console.log('SignInForm State: ' , {error, success})
+  console.log('SIGNIN Form state: ' , {error, success})
+  console.log('SIGNIN Form errors: ', form.formState.errors )
+
 
   return (
     <CardWrapper

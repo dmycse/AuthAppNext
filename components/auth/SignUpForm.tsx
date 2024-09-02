@@ -45,11 +45,11 @@ export const SignUpForm = () => {
   let { errors } = form.formState;
 
   let formSubmitHandler = (data: SignUpFormType) => {
-    console.log('SignUpForm data in: ', data);
+    console.log('SIGNUp Form Input: ', data);
     form.reset();
     startTransition( async () => {
       let response = await signup(data);
-      console.log(response)
+      console.log('SIGNUp Action response: ', response)
       setError(response.error);
       setSuccess(response.success);
     });
@@ -60,8 +60,8 @@ export const SignUpForm = () => {
     setError('');
   };
 
-  console.log('SignUpForm state: ' , {error, success})
-  console.log('SignUpForm form errors: ', form.formState.errors )
+  console.log('SIGNUp Form state: ' , {error, success})
+  console.log('SIGNUp Form form errors: ', form.formState.errors )
 
   return (
     <CardWrapper
