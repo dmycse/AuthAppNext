@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import authConfig from "./auth.config";
 
-import { publicRoutes, authRoutes, apiAuthPrefix, DEFAULT_SIGNIN_REDIRECT} from './routes';
+import { publicRoutes, authRoutes, apiAuthPrefix, DEFAULT_SIGNIN_REDIRECT} from '@/routes';
 
 const { auth } = NextAuth(authConfig);
 
@@ -15,12 +15,16 @@ export default auth((req) => {
   
   console.log("\x1b[36m", 'MIDDLEWARE: ', "\x1b[0m", {
     Auth: req.auth,
-    // NextUrl: req.nextUrl,
     Route: req.nextUrl.pathname,
     isUserSignedIn,
     isApiAuthRoute,
     isPublicRoute,
-    isAuthRoute
+    isAuthRoute,
+    // NextUrl: nextUrl,
+    // Req: req,
+    // Res: NextResponse.next(),
+    // URL: new URL(DEFAULT_SIGNIN_REDIRECT, nextUrl),
+    // Cookies: req.cookies.get("authjs.csrf-token")
     }
   );
   
@@ -30,7 +34,7 @@ export default auth((req) => {
     if (isUserSignedIn) {
       return Response.redirect(new URL(DEFAULT_SIGNIN_REDIRECT, nextUrl));
     }
-
+    
     return;
   }
 
