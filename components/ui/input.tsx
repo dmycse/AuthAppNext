@@ -26,7 +26,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {pass && (
-          <span className="absolute top-3 right-2 cursor-pointer" onClick={() => setViewPass(prev => !prev)}>
+          <span className="absolute top-3 right-2 cursor-pointer" onClick={() => setViewPass(!viewPass)}>
             {viewPass ? <EyeOpenIcon /> : <EyeClosedIcon />} 
           </span>
         )}
