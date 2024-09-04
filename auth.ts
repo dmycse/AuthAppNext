@@ -8,6 +8,18 @@ import { db } from "@/lib/db";
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },
+  pages: {
+    signIn: "/auth/signin",
+    error: "auth/error"
+  },
+  events: {
+    async linkAccount({ user }) {
+      await db.user.update({
+        where: { id: user.id },
+        data: { emailVerified: new Date()} 
+      })
+    }
+  },
   callbacks: {
     jwt({ token, user }) {
       if (user) { // user is available during sign-in
