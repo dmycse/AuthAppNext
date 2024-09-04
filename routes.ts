@@ -5,15 +5,19 @@
  */
 export const publicRoutes = [
   '/',
+  // '/settings'
 ];
 
 /**
+ * An array of routes that are used for authentication
  * These routes redirect "signed in" users to '/settings'
  * @type{ stirng[] }
  */
 export const authRoutes = [
   '/auth/signin',
-  '/auth/signup'
+  '/auth/signup',
+  '/auth/error',
+  
 ];
 
 /**
