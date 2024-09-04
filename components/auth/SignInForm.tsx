@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { useSearchParams } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignInFormSchema } from "@/schemas";
@@ -27,6 +28,11 @@ import { signin } from "@/actions/signin";
 
 
 export const SignInForm = () => {
+
+  let searchParams = useSearchParams();
+  let errorUrlWarning = searchParams.get("error") === "OAuthAccountNotLinked"
+    ? "Email is already in use! Use another email address."
+    : "";
 
   let [success, setSuccess] = useState<string | undefined>('');
   let [error, setError] = useState<string | undefined>('');
@@ -123,7 +129,7 @@ export const SignInForm = () => {
               )}
             />
           </div>
-          <FormError message={error} />
+          <FormError message={error || errorUrlWarning} />
           <FormSuccess message={success} />
           <Button 
             type="submit" 
