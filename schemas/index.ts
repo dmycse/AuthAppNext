@@ -6,7 +6,8 @@ export const SignUpFormSchema = z.object({
 
   email: z.string()
             .min(1, 'Email is required')
-            .email("Invalid email"),
+            .email("Invalid email")
+            .toLowerCase(),
 
   password: z.string()
               .min(1, "Password is required")
