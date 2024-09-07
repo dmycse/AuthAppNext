@@ -31,7 +31,7 @@ export const SignInForm = () => {
 
   let searchParams = useSearchParams();
   let errorUrlWarning = searchParams.get("error") === "OAuthAccountNotLinked"
-    ? "Email is already in use! Use another email address."
+    ? "Email is already in use! Use another one."
     : "";
 
   let [success, setSuccess] = useState<string | undefined>('');

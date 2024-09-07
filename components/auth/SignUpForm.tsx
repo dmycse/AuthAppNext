@@ -32,7 +32,6 @@ export const SignUpForm = () => {
   let [error, setError] = useState<string | undefined>('');
   let [isPending, startTransition] = useTransition();
 
-
   let form = useForm<SignUpFormType>({
     resolver: zodResolver(SignUpFormSchema),
     defaultValues: {
@@ -61,7 +60,7 @@ export const SignUpForm = () => {
   };
 
   console.log('SIGNUp Form state: ' , {error, success})
-  console.log('SIGNUp Form form errors: ', form.formState.errors )
+  console.log('SIGNUp Form errors: ', form.formState.errors )
 
   return (
     <CardWrapper
