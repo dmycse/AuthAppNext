@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 
 export let getUserByEmail = async (email: string) => {
   try {
-    let user = await db.user.findUnique({where: { email: email.toLowerCase()}});
+    let user = await db.user.findUnique({where: { email }});
 
     return user;
     
