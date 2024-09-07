@@ -4,6 +4,9 @@ import { SignUpFormSchema } from "@/schemas";
 import type { SignUpFormType } from '@/schemas';
 
 import { db } from '@/lib/db';
+import { generateVerificationToken } from "@/lib/tokens";
+import { sendVerificationEmail } from "@/lib/mail";
+
 import { getUserByEmail } from '@/utils/user';
 import { createPasswordHash } from "@/utils/pass";
 
@@ -30,10 +33,17 @@ export const signup = async (formData: SignUpFormType) => {
   await db.user.create({
     data: {
       name,
-      email: email.toLowerCase(),
+      email,
       password: hashedPassword 
     },
-  });
+  }).catch(error => console.log("\x1b[31m", 'User DB Create Error: ', error, "\x1b[0m"));
 
-  return {success: "Account's been created!"};
+  let verificationToken = await generateVerificationToken(email);
+
+  if (verificationToken) {
+    await sendVerificationEmail(verificationToken.email, verificationToken.token);
+    return {success: "Confirmation sent to your email box!"};
+  }
+
+ return {error: 'Something went wrong!'};
 }
