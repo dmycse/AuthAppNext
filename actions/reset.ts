@@ -1,9 +1,11 @@
 "use server";
 
-// import { sendResetEmail } from "@/lib/mail";
 import { ResetFormSchema } from "@/schemas";
 import type { ResetFormType } from "@/schemas";
+
 import { getUserByEmail } from "@/utils/user";
+import { generatePasswordResetToken } from "@/lib/tokens";
+import { sendPasswordResetEmail } from "@/lib/mail";
 
 
 export const reset = async (formData: ResetFormType) => {
@@ -23,12 +25,13 @@ export const reset = async (formData: ResetFormType) => {
     return {error: "Email not found!"};
   }
 
-  // Todo: Generate a token and send it to the user
-  // let resetToken = await sendResetEmail(email);
+  let passwordResetToken = await generatePasswordResetToken(existingUser.email);
 
-  // if (!resetToken) {
-  //   return {error: "Something went wrong!"};
-  // }
- 
+  if (!passwordResetToken) {
+    return {error: "Something went wrong!"};
+  }
+
+  await sendPasswordResetEmail(passwordResetToken.email, passwordResetToken.token);
+  
   return {success: "Reset email sent!"};
 }
