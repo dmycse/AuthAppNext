@@ -19,12 +19,14 @@ export default {
     }),
     Credentials({
     async authorize(credentials) {
+      console.log("\x1b[31m", 'Authorize!!!', "\x1b[0m");
       let isAuthData = SignInFormSchema.safeParse(credentials);
       
       if (isAuthData.success) {
+        console.log("\x1b[31m", 'Authorize 2!!!', "\x1b[0m");
         return await mathcUserPassword(isAuthData.data);
       }
-
+      console.log("\x1b[31m", 'Authorize 3!!!', "\x1b[0m");
       return null;
     },
    }) 

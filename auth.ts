@@ -14,6 +14,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     error: "auth/error"
   },
   events: {
+    // * Fill in emailVerification field for users signed in via Google or GitHub
     async linkAccount({ user }) {
       await db.user.update({
         where: { id: user.id },
@@ -23,7 +24,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
   callbacks: {
     async signIn({user, account}) {
-      console.log({'User': user,'Account': account});
+      console.log('SignIn Callback: ', {'User': user, 'Account': account});
 
       // * Allow OAuth signIn without email verification
       if (account?.provider !== "credentials") return true;
@@ -32,7 +33,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     
       // * Prevent sign in without email verification
       if (!existingUser?.emailVerified) {
-        console.log("\x1b[31m", 'NOT EMAILVERRYFIED!!!', "\x1b[0m")
+        console.log("\x1b[31m", "Email isn't Confirmed!!!", "\x1b[0m");
         return false;
       }
       
@@ -40,7 +41,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
  
       return true;
     },
-    jwt({ token, user }) {
+    async jwt({ token, user }) {
       if (user) { // user is available during sign-in
         token.role = user.role;
         token.id = user.id;
@@ -49,9 +50,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       console.log("\x1b[32m", "AUTH JWT Token: ", '\x1b[0m', token);
       return token;
     },
-    session({ session, token }) {
+    async session({ session, token }) {
       if (!session.user) return session;
-
+      
       if (token.id && token.role) {
         session.user.id = token.id;
         session.user.role = token.role;
