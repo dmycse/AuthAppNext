@@ -36,7 +36,7 @@ export const signup = async (formData: SignUpFormType) => {
       email,
       password: hashedPassword 
     },
-  }).catch(error => console.log("\x1b[31m", 'User DB Create Error: ', error, "\x1b[0m"));
+  }).catch(error => console.log("\x1b[31m", 'DB User Create Error: ', "\x1b[0m", error));
 
   let verificationToken = await generateVerificationToken(email);
 

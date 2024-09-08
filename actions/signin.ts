@@ -14,7 +14,7 @@ import { getUserByEmail } from "@/utils/user";
 
 
 export const signin = async (formData: SignInFormType) => {
-  console.log('\x1b[33m', 'ACTION SignIn: ', '\x1b[0m', formData);
+  console.log('\x1b[33m','ACTION SignIn: ','\x1b[0m', formData);
 
   let validatedResult = SignInFormSchema.safeParse(formData);
  
@@ -25,9 +25,9 @@ export const signin = async (formData: SignInFormType) => {
   let { email, password } = validatedResult.data;
 
   let existingUser = await getUserByEmail(email);
-  console.log("ExistingUser", existingUser);
+  console.log("SIGNIN ExistingUser", existingUser);
   if (!existingUser?.email || !existingUser.password) {
-    return {error: "User not exists!"};
+    return {error: "User does not exists!"};
   }
 
   if (!existingUser.emailVerified) {
@@ -37,6 +37,7 @@ export const signin = async (formData: SignInFormType) => {
       await sendVerificationEmail(verificationToken.email, verificationToken.token);
       return {error: "Confirm email. Check your email box!"};
     }
+
 
     return {error: 'Something went wrong!'}
   }
