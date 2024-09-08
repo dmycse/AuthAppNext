@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignInFormSchema } from "@/schemas";
@@ -57,7 +58,7 @@ export const SignInForm = () => {
         setError(response.error);
         setSuccess(response.success);
       }
-      return;
+      // return;
     });
   };
 
@@ -124,6 +125,14 @@ export const SignInForm = () => {
                       {...field} 
                     />
                   </FormControl>
+                  <Button
+                    size="sm"
+                    variant="link"
+                    asChild
+                    className="w-full px-0 font-normal justify-end "
+                  >
+                    <Link href="/auth/reset">Forgot password?</Link>
+                  </Button>
                   <FormMessage />
                 </FormItem>
               )}
