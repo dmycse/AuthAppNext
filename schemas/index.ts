@@ -22,5 +22,7 @@ export type SignInFormType = z.infer<typeof SignInFormSchema>;
 export const ResetFormSchema = SignUpFormSchema.omit({name: true, password: true});
 export type ResetFormType = z.infer<typeof ResetFormSchema>;
 
+export const NewPasswordFormSchema = SignUpFormSchema.omit({name: true, email: true});
+export type NewPasswordFormType = z.infer<typeof NewPasswordFormSchema>;
 
 
