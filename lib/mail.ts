@@ -15,4 +15,16 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 
 }
 
+export const sendPasswordResetEmail = async (email: string, token: string) => {
+  const resetLink = `http://localhost:3000/auth/new-password?token=${token}`;
+
+  await resend.emails.send({
+    from: 'Resend <onboarding@resend.dev>',
+    to: email,
+    subject: 'AuthApp: Password reset request',
+    html: `<p>Click <a href="${resetLink }">here</a> to reset your password.</p>`
+  })
+  .catch(error => Response.json({ error }, { status: 500 }));
+}
+
 
