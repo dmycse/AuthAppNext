@@ -38,7 +38,6 @@ export const signin = async (formData: SignInFormType) => {
       return {error: "Confirm email. Check your email box!"};
     }
 
-
     return {error: 'Something went wrong!'}
   }
 
