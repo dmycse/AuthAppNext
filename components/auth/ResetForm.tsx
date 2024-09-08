@@ -104,7 +104,7 @@ export const ResetForm = () => {
             className="w-full disabled:opacity-40"
             disabled={isPending}
           >
-            Send reset email
+            Send reset password email
           </Button>
         </form>
       </Form>
