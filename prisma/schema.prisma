@@ -47,6 +47,8 @@ model User {
   role          UserRole @default(User)
   image         String?
   accounts      Account[]
+  isTwoFactorEnabled    Boolean @default(false)  
+  twoFactorConfirmation TwoFactorConfirmation?
 
   @@map("users")
 }
@@ -69,4 +71,23 @@ model PasswordResetToken {
  
   @@unique([email, token])
   @@map("passwordresettokens")
+}
+
+model TwoFactorToken {
+  id         String @id @default(cuid())
+  email      String
+  token      String @unique
+  expires    DateTime
+ 
+  @@unique([email, token])
+  @@map("twofactortokens")
+}
+
+model TwoFactorConfirmation {
+  id         String @id @default(cuid())
+  userId     String
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
+  @@map("twofactorconfirmations")
 }
