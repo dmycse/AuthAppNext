@@ -28,3 +28,15 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 }
 
 
+export const sendTwoFactorTokenByEmail = async (email: string, token: string) => {
+
+  await resend.emails.send({
+    from: 'Resend <onboarding@resend.dev>',
+    to: email,
+    subject: 'AuthApp: Two Factor Code',
+    html: `<p>Your code is ${ token }</p>`
+  })
+  .catch(error => Response.json({ error }, { status: 500 }));
+}
+
+
