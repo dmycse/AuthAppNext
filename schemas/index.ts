@@ -16,7 +16,7 @@ export const SignUpFormSchema = z.object({
 
 export type SignUpFormType = z.infer<typeof SignUpFormSchema>;
 
-export const SignInFormSchema = SignUpFormSchema.omit({name: true});
+export const SignInFormSchema = SignUpFormSchema.omit({name: true}).extend({code: z.string().optional()});
 export type SignInFormType = z.infer<typeof SignInFormSchema>;
 
 export const ResetFormSchema = SignUpFormSchema.omit({name: true, password: true});
