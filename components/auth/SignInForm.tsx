@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,12 +35,12 @@ export const SignInForm = () => {
     ? "Email is already in use! Use another one."
     : "";
 
+    let router = useRouter();
+    let [isPending, startTransition] = useTransition();
+
   let [success, setSuccess] = useState<string | undefined>('');
   let [error, setError] = useState<string | undefined>('');
   let [twoFactor, setTwoFactor] = useState<boolean | undefined>(false);
-
-  let [isPending, startTransition] = useTransition();
-
 
   let form = useForm<SignInFormType>({
     resolver: zodResolver(SignInFormSchema),
@@ -50,28 +50,29 @@ export const SignInForm = () => {
     }
   });
 
-  let formSubmitHandler = (data: SignInFormType) => {
+  let formSubmitHandler = async (data: SignInFormType) => {
     console.log('SIGNIN Form Input data: ', data);
     startTransition(async () => {
       let response = await signin(data);
       console.log('SIGNIN Form Action response: ', response);
 
       if (!response) {
-        setError('Something went wrong!');
+        setError('Something went wrong! Form Error 1');
         return; 
       }
       
-      if (response.error) {
+      if (response?.error) {
         form.reset();
         setError(response.error);
       }
 
-      if (response.success) {
+      if (response?.success) {
         form.reset();
+        router.push('/settings');
         setSuccess(response.success);
       }
         
-      if (response.twoFactor) {
+      if (response?.twoFactor) {
         setTwoFactor(true);
       }
     });
