@@ -3,18 +3,21 @@
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 
+import { db } from "@/lib/db";
 import { SignInFormSchema } from "@/schemas";
 import type { SignInFormType } from '@/schemas';
 
 import { DEFAULT_SIGNIN_REDIRECT } from '@/routes';
 
-import { generateVerificationToken } from "@/lib/tokens";
-import { sendVerificationEmail } from "@/lib/mail";
 import { getUserByEmail } from "@/utils/user";
+import { getTwoFactorTokenByEmail } from "@/utils/twofactortoken";
+import { generateVerificationToken, generateTwoFactorToken } from "@/lib/tokens";
+import { sendVerificationEmail, sendTwoFactorTokenByEmail } from "@/lib/mail";
+import { getTwoFactorConfirmationByUserId } from "@/utils/twofactorconfirmation";
 
 
 export const signin = async (formData: SignInFormType) => {
-  console.log('\x1b[33m','ACTION SignIn: ','\x1b[0m', formData);
+  console.log('\x1b[43m%s\x1b[0m','ACTION SignIn', formData);
 
   let validatedResult = SignInFormSchema.safeParse(formData);
  
@@ -22,10 +25,10 @@ export const signin = async (formData: SignInFormType) => {
     return {error: 'Invalid credentials. Try again.'};
   }
 
-  let { email, password } = validatedResult.data;
+  let { email, password, code } = validatedResult.data;
 
   let existingUser = await getUserByEmail(email);
-  console.log("SIGNIN ExistingUser", existingUser);
+  console.log('\x1b[43m%s\x1b[0m','ACTION SignIn', existingUser);
   if (!existingUser?.email || !existingUser.password) {
     return {error: "User does not exists!"};
   }
@@ -39,6 +42,55 @@ export const signin = async (formData: SignInFormType) => {
     }
 
     return {error: 'Something went wrong!'}
+  }
+
+  if (existingUser.isTwoFactorEnabled) {
+      if (code) {
+        let twoFactorToken = await getTwoFactorTokenByEmail(existingUser.email);
+        
+        if (!twoFactorToken) {
+          return {error: 'Something went wrong!'}
+        }
+
+        if (twoFactorToken.token !== code) {
+          return {error: 'Invalid code!'}
+        }
+
+        let hasExpired = new Date(twoFactorToken.expires) < new Date();
+
+        if (hasExpired) {
+          return {error: 'Code has expired!'}
+        }
+
+        await db.twoFactorToken.delete({
+          where: { id: twoFactorToken.id }
+        }).catch(error => console.log("\x1b[41m%s\x1b[0m", 'SIGNIN DB TwoFactorToken Delete Error: ', error));
+        // * Posssible to have db.twoFactorConfirmation is redudant
+        let existinfTwoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
+        
+        if (existinfTwoFactorConfirmation) {
+          await db.twoFactorConfirmation.delete({
+            where: { id: existinfTwoFactorConfirmation.id }
+          }).catch(error => console.log("\x1b[41m%s\x1b[0m", 'SIGNIN DB TwoFactorConfirmation Delete Error: ', error));
+        }
+
+        await db.twoFactorConfirmation.create({
+          data: {
+            userId: existingUser.id
+          }
+        }).catch(error => console.log("\x1b[41m%s\x1b[0m", 'SIGNIN DB TwoFactorConfirmation Create Error: ', error));
+
+      } else {
+          let twoFactorToken = await generateTwoFactorToken(existingUser.email);
+      
+          if (!twoFactorToken) {
+            return {error: 'Something went wrong!'}
+          }
+          
+          await sendTwoFactorTokenByEmail(twoFactorToken.email, twoFactorToken.token);
+          
+          return {twoFactor: true};
+      }
   }
 
   try {
