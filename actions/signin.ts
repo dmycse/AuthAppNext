@@ -7,8 +7,6 @@ import { db } from "@/lib/db";
 import { SignInFormSchema } from "@/schemas";
 import type { SignInFormType } from '@/schemas';
 
-import { DEFAULT_SIGNIN_REDIRECT } from '@/routes';
-
 import { getUserByEmail } from "@/utils/user";
 import { getTwoFactorTokenByEmail } from "@/utils/twofactortoken";
 import { generateVerificationToken, generateTwoFactorToken } from "@/lib/tokens";
@@ -17,7 +15,7 @@ import { getTwoFactorConfirmationByUserId } from "@/utils/twofactorconfirmation"
 
 
 export const signin = async (formData: SignInFormType) => {
-  console.log('\x1b[43m%s\x1b[0m','ACTION SignIn', formData);
+  console.log('\x1b[43m%s\x1b[0m','ACTION SignIn FormData', formData);
 
   let validatedResult = SignInFormSchema.safeParse(formData);
  
@@ -28,9 +26,9 @@ export const signin = async (formData: SignInFormType) => {
   let { email, password, code } = validatedResult.data;
 
   let existingUser = await getUserByEmail(email);
-  console.log('\x1b[43m%s\x1b[0m','ACTION SignIn', existingUser);
+  console.log('\x1b[43m%s\x1b[0m','ACTION SignIn ExistingUser', existingUser);
   if (!existingUser?.email || !existingUser.password) {
-    return {error: "User does not exists!"};
+    return {error: "User does not exist!"};
   }
 
   if (!existingUser.emailVerified) {
@@ -41,7 +39,7 @@ export const signin = async (formData: SignInFormType) => {
       return {error: "Confirm email. Check your email box!"};
     }
 
-    return {error: 'Something went wrong!'}
+    return {error: 'Something went wrong! Action Error 1'}
   }
 
   if (existingUser.isTwoFactorEnabled) {
@@ -49,7 +47,7 @@ export const signin = async (formData: SignInFormType) => {
         let twoFactorToken = await getTwoFactorTokenByEmail(existingUser.email);
         
         if (!twoFactorToken) {
-          return {error: 'Something went wrong!'}
+          return {error: 'Something went wrong! Action Error 2'}
         }
 
         if (twoFactorToken.token !== code) {
@@ -84,7 +82,7 @@ export const signin = async (formData: SignInFormType) => {
           let twoFactorToken = await generateTwoFactorToken(existingUser.email);
       
           if (!twoFactorToken) {
-            return {error: 'Something went wrong!'}
+            return {error: 'Something went wrong! Action Error 3'}
           }
           
           await sendTwoFactorTokenByEmail(twoFactorToken.email, twoFactorToken.token);
@@ -97,16 +95,19 @@ export const signin = async (formData: SignInFormType) => {
     await signIn('credentials', {
       email,
       password,
-      redirectTo: DEFAULT_SIGNIN_REDIRECT
+      redirect: false,
+      // redirectTo: '/settings'
     })
+
   } catch (error) {
       if (error instanceof AuthError) {
           return error.type === "CredentialsSignin" 
                   ? {error: 'Invalid credentials!' }
-                  : {error: 'Something went wrong!'}
+                  : {error: 'Something went wrong! Action Error 4'}
       }
+      console.log('\x1b[43m%s\x1b[0m','ACTION SignIn ERROR DETAILS:', error);
     throw error;
   }
-
+ 
   return {success: "Your successfuly signin!"};
 }
