@@ -3,11 +3,12 @@ import { JWT } from "next-auth/jwt";
 
 
 declare module "next-auth" {
-  interface User {
-    role: 'Admin' | 'User'
+  export interface User {
+    role: 'Admin' | 'User',
+    isTwoFactorEnabled: boolean,
   }
   
-  interface Session {
+  export interface Session {
       user: User & DefaultSession["user"]
   }
 }
