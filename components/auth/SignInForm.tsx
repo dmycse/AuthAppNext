@@ -18,12 +18,12 @@ import {
   FormMessage 
 } from '@/components/ui/form';
 import { Input } from "@/components/ui/input";
+import { BeatLoader } from "react-spinners";
 
 import { CardWrapper } from "@/components/custom_ui/CardWrapper";
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/auth/FormError";
 import { FormSuccess } from "@/components/auth/FormSuccess";
-
 
 import { signin } from "@/actions/signin";
 
@@ -37,6 +37,8 @@ export const SignInForm = () => {
 
   let [success, setSuccess] = useState<string | undefined>('');
   let [error, setError] = useState<string | undefined>('');
+  let [twoFactor, setTwoFactor] = useState<boolean | undefined>(false);
+
   let [isPending, startTransition] = useTransition();
 
 
@@ -50,15 +52,28 @@ export const SignInForm = () => {
 
   let formSubmitHandler = (data: SignInFormType) => {
     console.log('SIGNIN Form Input data: ', data);
-    // form.reset();
     startTransition(async () => {
       let response = await signin(data);
       console.log('SIGNIN Form Action response: ', response);
-      if (response) {
+
+      if (!response) {
+        setError('Something went wrong!');
+        return; 
+      }
+      
+      if (response.error) {
+        form.reset();
         setError(response.error);
+      }
+
+      if (response.success) {
+        form.reset();
         setSuccess(response.success);
       }
-      // return;
+        
+      if (response.twoFactor) {
+        setTwoFactor(true);
+      }
     });
   };
 
@@ -69,7 +84,7 @@ export const SignInForm = () => {
     setError('');
   };
 
-  console.log('SIGNIN Form state: ' , {error, success})
+  console.log('SIGNIN Form state: ' , {error, success, twoFactor})
   console.log('SIGNIN Form errors: ', form.formState.errors )
 
 
@@ -113,7 +128,17 @@ export const SignInForm = () => {
               name="password"
               render={({field}) => (
                 <FormItem className="mb-6">
-                  <FormLabel className="text-black">Password</FormLabel>
+                  <div className="flex justify-between items-center">
+                    <FormLabel className="text-black">Password</FormLabel>
+                    <Button
+                      size="sm"
+                      variant="link"
+                      asChild
+                      className="w-full px-0 font-normal justify-end text-gray-400"
+                    >
+                      <Link href="/auth/reset">Forgot password?</Link>
+                    </Button>
+                  </div>
                   <FormControl>
                     <Input
                       type="password" 
@@ -125,19 +150,39 @@ export const SignInForm = () => {
                       {...field} 
                     />
                   </FormControl>
-                  <Button
-                    size="sm"
-                    variant="link"
-                    asChild
-                    className="w-full px-0 font-normal justify-end "
-                  >
-                    <Link href="/auth/reset">Forgot password?</Link>
-                  </Button>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
+          {twoFactor && (
+            <div className="space-y-4">
+              <FormField 
+                control={form.control}
+                name="code"
+                render={({field}) => (
+                  <FormItem>
+                    <FormLabel className="text-blue-500">Two Factor Code (check your email box)</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="text" 
+                        placeholder="- - - - - -"
+                        disabled={isPending}
+                        className={errors.code && "border-red-500"} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+          {isPending && (
+            <div className='mt-5 flex justify-center'>
+              <BeatLoader />
+            </div>
+          )}
           <FormError message={error || errorUrlWarning} />
           <FormSuccess message={success} />
           <Button 
