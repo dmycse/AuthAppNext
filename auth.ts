@@ -12,7 +12,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   pages: {
     signIn: "/auth/signin",
-    error: "auth/error"
+    error: "/auth/error"
   },
   events: {
     // * Fill in emailVerification field for users signed in via Google or GitHub
@@ -34,7 +34,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     
       // * Prevent sign in without email verification
       if (!existingUser?.emailVerified) {
-        console.log("\x1b[41m%s\x1b[0m", "Email isn't Confirmed!!!");
+        console.log("\x1b[41m%s\x1b[0m", "Email isn't confirmed!!!");
         return false;
       }
       
@@ -51,13 +51,14 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           where: { id: twoFactorConfirmation.id }
         }).catch(error => console.log("\x1b[41m%s\x1b[0m", 'AUTH SignIn DB TwoFactorConfirmation Delete Error: ', error));
       }
-
+      
       return true;
     },
     async jwt({ token, user }) {
       if (user) { // user is available during sign-in
         token.role = user.role;
         token.id = user.id;
+        token.isTwoFactorEnabled = user.isTwoFactorEnabled;
       }
   
       console.log("\x1b[44m%s\x1b[0m", "AUTH JWT Token: ", token);
@@ -69,7 +70,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (token.id && token.role) {
         session.user.id = token.id;
         session.user.role = token.role;
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
       }
+
       console.log("\x1b[44m%s\x1b[0m", "AUTH Session: ", session);
       return session;
     },
