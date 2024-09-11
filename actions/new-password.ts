@@ -5,8 +5,6 @@ import type { NewPasswordFormType } from "@/schemas";
 
 import { getPasswordResetTokenByToken } from "@/utils/passwordreset";
 import { getUserByEmail } from "@/utils/user";
-import { generatePasswordResetToken } from "@/lib/tokens";
-import { sendPasswordResetEmail } from "@/lib/mail";
 import { createPasswordHash } from "@/utils/pass";
 import { db } from "@/lib/db";
 
