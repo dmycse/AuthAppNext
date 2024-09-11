@@ -1,7 +1,9 @@
+import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "@/lib/db";
 import { getVerificationTokenByEmail } from "@/utils/verificationtoken";
 import { getPasswordResetTokenByEmail } from "@/utils/passwordreset";
+import { getTwoFactorTokenByEmail } from "@/utils/twofactortoken";
 
 
 export const generateVerificationToken = async (email: string) => {
@@ -27,6 +29,7 @@ export const generateVerificationToken = async (email: string) => {
   return verificationToken;
 }
 
+
 export const generatePasswordResetToken = async (email: string) => {
   let token = uuidv4();
   let expires = new Date(new Date().getTime() + 3600 * 1000);
@@ -48,4 +51,29 @@ export const generatePasswordResetToken = async (email: string) => {
   }).catch(error => console.log("\x1b[31m", 'GeneratePasswordResetToken DB PasswordResetToken Create Error: ', "\x1b[0m", error));
   console.log("\x1b[36m", 'GeneratePasswordResetToken new passwordResetToken: ', "\x1b[0m", passwordResetToken);
   return passwordResetToken;
+}
+
+
+export const generateTwoFactorToken = async (email: string) => {
+  let token = crypto.randomInt(100_000, 1_000_000).toString();
+  // let expires = new Date(new Date().getTime() + 3600 * 1000);
+  let expires = new Date(new Date().getTime() + 15 * 60 * 1000);
+
+  let existingToken = await getTwoFactorTokenByEmail(email);
+  console.log("\x1b[36m%s\x1b[0m", 'GenerateTwoFactorToken ExistingToken: ', existingToken);
+  if (existingToken) {
+    await db.twoFactorToken.delete({
+      where: { id: existingToken.id }
+    }).catch(error => console.log("\x1b[41m%s\x1b[0m", 'GenerateTwoFactorToken DB TwoFactorToken Delete Error: ', error));
+  }
+
+  let twoFactorToken = await db.twoFactorToken.create({
+    data: {
+      email,
+      token,
+      expires
+    }
+  }).catch(error => console.log("\x1b[41m%s\x1b[0m", 'GenerateTwoFactorToken DB TwoFactorToken Create Error: ', error));
+  console.log("\x1b[36m%s\x1b[0m", 'GenerateTwoFactorToken new twoFactorToken: ', twoFactorToken);
+  return twoFactorToken;
 }
