@@ -1,9 +1,9 @@
 'use server';
 
-import { signOut } from "next-auth/react";
+import { signOut } from "@/auth";
 
 
 export const signout = async () => {
   // * some server logic if needed
-  await signOut();
+  await signOut({ redirectTo: '/auth/signin' });
 }
