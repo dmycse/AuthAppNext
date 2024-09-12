@@ -10,12 +10,9 @@ interface SignOutButtonProps {
 
 export default function SignInButton({children}: SignOutButtonProps) {
 
-
   let onClickHandler = () => {
     signout();
   };
-
-
 
   return (
     <span className='cursor-pointer' onClick={onClickHandler}>
