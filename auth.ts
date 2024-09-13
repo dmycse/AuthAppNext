@@ -5,6 +5,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import { db } from "@/lib/db";
 import { getUserById } from "@/utils/user";
 import { getTwoFactorConfirmationByUserId } from "@/utils/twofactorconfirmation";
+import { get } from "http";
+import { getAccountById } from "./utils/account";
 
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
@@ -55,11 +57,23 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return true;
     },
     async jwt({ token, user }) {
-      if (user) { // user is available during sign-in
-        token.role = user.role;
-        token.id = user.id;
-        token.isTwoFactorEnabled = user.isTwoFactorEnabled;
-      }
+      if (!token.sub) return token;
+      
+      // user is available during sign-in process only
+      // console.log("JWT Token user: ", user);
+      
+      let currentUser = await getUserById(token.id as string);
+
+      if (!currentUser) return token;
+    
+      let currentAccount = await getAccountById(currentUser.id);
+
+      token.isOAuth = !!currentAccount;
+      token.name = currentUser.name;
+      token.email = currentUser.email;
+      token.role = currentUser.role;
+      token.id = currentUser.id;
+      token.isTwoFactorEnabled = currentUser.isTwoFactorEnabled as boolean;
   
       console.log("\x1b[44m%s\x1b[0m", "AUTH JWT Token: ", token);
       return token;
@@ -68,9 +82,12 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (!session.user) return session;
       
       if (token.id && token.role) {
+        session.user.name = token.name;
+        session.user.email = token.email!;
         session.user.id = token.id;
         session.user.role = token.role;
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+        session.user.isOAuth = token.isOAuth as boolean;
       }
 
       console.log("\x1b[44m%s\x1b[0m", "AUTH Session: ", session);
