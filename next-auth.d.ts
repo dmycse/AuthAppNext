@@ -7,6 +7,7 @@ declare module "next-auth" {
   export interface User {
     role: UserRole,
     isTwoFactorEnabled: boolean,
+    isOAuth?: boolean,
   }
   
   export interface Session {
