@@ -5,7 +5,6 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import { db } from "@/lib/db";
 import { getUserById } from "@/utils/user";
 import { getTwoFactorConfirmationByUserId } from "@/utils/twofactorconfirmation";
-import { get } from "http";
 import { getAccountById } from "./utils/account";
 
 
@@ -27,7 +26,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
   callbacks: {
     async signIn({user, account}) {
-      console.log("\x1b[34m%s\x1b[0m", 'AUTH SignIn Callback: ', {'User': user, 'Account': account});
+      // console.log("\x1b[34m%s\x1b[0m", 'AUTH SignIn Callback: ', {'User': user, 'Account': account});
 
       // * Allow OAuth (Google or GitHub) signIn without email verification
       if (account?.provider !== "credentials") return true;
@@ -36,7 +35,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     
       // * Prevent sign in without email verification
       if (!existingUser?.emailVerified) {
-        console.log("\x1b[41m%s\x1b[0m", "Email isn't confirmed!!!");
+        // console.log("\x1b[41m%s\x1b[0m", "Email isn't confirmed!!!");
         return false;
       }
       
@@ -45,7 +44,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         let twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
         
         if (!twoFactorConfirmation) {
-          console.log("\x1b[41m%s\x1b[0m", "Two Factor Authentication is not confirmed!!!");
+          // console.log("\x1b[41m%s\x1b[0m", "Two Factor Authentication is not confirmed!!!");
           return false;
         }
 
@@ -77,7 +76,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       token.isTwoFactorEnabled = currentUser.isTwoFactorEnabled as boolean;
       token.isOAuth = Boolean(currentAccount && currentAccount.type !== "credentials");
   
-      console.log("\x1b[44m%s\x1b[0m", "AUTH JWT Token: ", token);
+      // console.log("\x1b[44m%s\x1b[0m", "AUTH JWT Token: ", token);
       return token;
     },
     async session({ session, token }) {
@@ -92,7 +91,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         session.user.isOAuth = token.isOAuth as boolean;
       }
 
-      console.log("\x1b[44m%s\x1b[0m", "AUTH Session: ", session);
+      // console.log("\x1b[44m%s\x1b[0m", "AUTH Session: ", session);
       return session;
     },
   },

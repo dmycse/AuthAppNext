@@ -9,10 +9,10 @@ import { sendPasswordResetEmail } from "@/lib/mail";
 
 
 export const reset = async (formData: ResetFormType) => {
-  console.log("\x1b[33m", 'ACTION Reset formData: ', "\x1b[0m", formData);
+  // console.log("\x1b[33m", 'ACTION Reset formData: ', "\x1b[0m", formData);
 
   let validatedResult = ResetFormSchema.safeParse(formData);
-  console.log("\x1b[33m", 'ACTION Reset validatedResult: ', "\x1b[0m", validatedResult);
+  // console.log("\x1b[33m", 'ACTION Reset validatedResult: ', "\x1b[0m", validatedResult);
   if (!validatedResult.success) {
     return {error: 'Invalid email!'};
   }
@@ -20,7 +20,7 @@ export const reset = async (formData: ResetFormType) => {
   let { email } = validatedResult.data;
   
   let existingUser = await getUserByEmail(email);
-  console.log("RESET ExistingUser: ", existingUser);
+  // console.log("RESET ExistingUser: ", existingUser);
   if (!existingUser) {
     return {error: "User not found!"};
   }

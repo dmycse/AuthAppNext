@@ -7,9 +7,9 @@ import { getVerificationTokenByToken } from '@/utils/verificationtoken';
 
 
 export const verificationToken = async (token: string) => {
-  console.log('\x1b[33m','ACTION VerificationToken token in: ', '\x1b[0m', token);
+  // console.log('\x1b[33m','ACTION VerificationToken token in: ', '\x1b[0m', token);
   let existingToken = await getVerificationTokenByToken(token);
-  console.log('\x1b[33m','ACTION VerificationToken existingToken: ', '\x1b[0m', existingToken);
+  // console.log('\x1b[33m','ACTION VerificationToken existingToken: ', '\x1b[0m', existingToken);
 
   if (!existingToken) {
     return {error: "Token does not exist!"};
@@ -22,7 +22,8 @@ export const verificationToken = async (token: string) => {
   }
 
   let existingUser = await getUserByEmail(existingToken.email);
-  console.log('\x1b[33m','ACTION VerificationToken existingUser: ','\x1b[0m', existingUser);
+  // console.log('\x1b[33m','ACTION VerificationToken existingUser: ','\x1b[0m', existingUser);
+  
   if (!existingUser) {
     // * Email does not exist
     return {error: "User does not exist!"};

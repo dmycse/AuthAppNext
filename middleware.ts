@@ -13,20 +13,19 @@ export default auth((req) => {
   let isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   let isAuthRoute = authRoutes.includes(nextUrl.pathname);
   
-  console.log("\x1b[36m%s\x1b[0m", 'MIDDLEWARE: ', {
-    Auth: req.auth,
-    Route: req.nextUrl.pathname,
-    isUserSignedIn,
-    isApiAuthRoute,
-    isPublicRoute,
-    isAuthRoute,
-    // NextUrl: nextUrl,
-    // Req: req,
-    // Res: NextResponse.next(),
-    // URL: new URL(DEFAULT_SIGNIN_REDIRECT, nextUrl),
-    // Cookies: req.cookies.get("authjs.csrf-token")
-    }
-  );
+  // console.log("\x1b[36m%s\x1b[0m", 'MIDDLEWARE: ', {
+  //   Auth: req.auth,
+  //   Route: req.nextUrl.pathname,
+  //   isUserSignedIn,
+  //   isApiAuthRoute,
+  //   isPublicRoute,
+  //   isAuthRoute,
+  //   NextUrl: nextUrl,
+  //   Req: req,
+  //   URL: new URL(DEFAULT_SIGNIN_REDIRECT, nextUrl),
+  //   Cookies: req.cookies.get("authjs.csrf-token")
+  //   }
+  // );
   
   if (isApiAuthRoute) return;
 
@@ -40,20 +39,21 @@ export default auth((req) => {
 
   if (!isUserSignedIn && !isPublicRoute) {
     let callbackUrl = nextUrl.pathname;
-    console.log("\x1b[36m%s\x1b[0m", 'MIDDLEWARE SignIn callbackUrl: ', callbackUrl);
-    console.log("\x1b[36m%s\x1b[0m", 'MIDDLEWARE SignIn nextUrl.search: ', nextUrl.search);
+    // console.log("\x1b[36m%s\x1b[0m", 'MIDDLEWARE SignIn callbackUrl: ', callbackUrl);
+    // console.log("\x1b[36m%s\x1b[0m", 'MIDDLEWARE SignIn nextUrl.search: ', nextUrl.search);
+    
     if (nextUrl.search) {
       callbackUrl += nextUrl.search;
-      console.log("\x1b[36m%s\x1b[0m", 'MIDDLEWARE SignIn nextUrl.search: ', nextUrl.search);
+      // console.log("\x1b[36m%s\x1b[0m", 'MIDDLEWARE SignIn nextUrl.search: ', nextUrl.search);
     }
 
     let encodedCallbackUrl = encodeURIComponent(callbackUrl);
-    console.log("\x1b[36m%s\x1b[0m", 'MIDDLEWARE SignIn encodedCallbackUrl: ', encodedCallbackUrl);
-    console.log("\x1b[36m%s\x1b[0m", 'MIDDLEWARE Redirect: ', new URL(`/auth/signin?${encodedCallbackUrl}` , nextUrl));
+    // console.log("\x1b[36m%s\x1b[0m", 'MIDDLEWARE SignIn encodedCallbackUrl: ', encodedCallbackUrl);
+    // console.log("\x1b[36m%s\x1b[0m", 'MIDDLEWARE Redirect: ', new URL(`/auth/signin?${encodedCallbackUrl}` , nextUrl));
+    
     return Response.redirect(new URL(`/auth/signin?callbackUrl=${encodedCallbackUrl}` , nextUrl));
   }
 
-  
   return;
 })
 

@@ -11,7 +11,8 @@ export const generateVerificationToken = async (email: string) => {
   let expires = new Date(new Date().getTime() + 3600 * 1000);
 
   let existingToken = await getVerificationTokenByEmail(email);
-  console.log("\x1b[36m", 'GenerateVerificationToken ExistingToken: ', "\x1b[0m", existingToken);
+  // console.log("\x1b[36m", 'GenerateVerificationToken ExistingToken: ', "\x1b[0m", existingToken);
+  
   if (existingToken) {
     await db.verificationToken.delete({
       where: { id: existingToken.id }
@@ -25,7 +26,8 @@ export const generateVerificationToken = async (email: string) => {
       expires
     }
   }).catch(error => console.log("\x1b[31m", 'DB VerificationToken Create Error: ', "\x1b[0m", error));
-  console.log("\x1b[36m", 'GenerateVerificationToken new verificationToken: ', "\x1b[0m", verificationToken);
+  //console.log("\x1b[36m", 'GenerateVerificationToken new verificationToken: ', "\x1b[0m", verificationToken);
+  
   return verificationToken;
 }
 
@@ -35,7 +37,8 @@ export const generatePasswordResetToken = async (email: string) => {
   let expires = new Date(new Date().getTime() + 3600 * 1000);
 
   let existingToken = await getPasswordResetTokenByEmail(email);
-  console.log("\x1b[36m", 'GeneratePasswordResetToken ExistingToken: ', "\x1b[0m", existingToken);
+  // console.log("\x1b[36m", 'GeneratePasswordResetToken ExistingToken: ', "\x1b[0m", existingToken);
+  
   if (existingToken) {
     await db.passwordResetToken.delete({
       where: { id: existingToken.id }
@@ -49,7 +52,8 @@ export const generatePasswordResetToken = async (email: string) => {
       expires
     }
   }).catch(error => console.log("\x1b[31m", 'GeneratePasswordResetToken DB PasswordResetToken Create Error: ', "\x1b[0m", error));
-  console.log("\x1b[36m", 'GeneratePasswordResetToken new passwordResetToken: ', "\x1b[0m", passwordResetToken);
+  // console.log("\x1b[36m", 'GeneratePasswordResetToken new passwordResetToken: ', "\x1b[0m", passwordResetToken);
+  
   return passwordResetToken;
 }
 
@@ -60,7 +64,8 @@ export const generateTwoFactorToken = async (email: string) => {
   let expires = new Date(new Date().getTime() + 15 * 60 * 1000);
 
   let existingToken = await getTwoFactorTokenByEmail(email);
-  console.log("\x1b[36m%s\x1b[0m", 'GenerateTwoFactorToken ExistingToken: ', existingToken);
+  // console.log("\x1b[36m%s\x1b[0m", 'GenerateTwoFactorToken ExistingToken: ', existingToken);
+  
   if (existingToken) {
     await db.twoFactorToken.delete({
       where: { id: existingToken.id }
@@ -74,6 +79,7 @@ export const generateTwoFactorToken = async (email: string) => {
       expires
     }
   }).catch(error => console.log("\x1b[41m%s\x1b[0m", 'GenerateTwoFactorToken DB TwoFactorToken Create Error: ', error));
-  console.log("\x1b[36m%s\x1b[0m", 'GenerateTwoFactorToken new twoFactorToken: ', twoFactorToken);
+  // console.log("\x1b[36m%s\x1b[0m", 'GenerateTwoFactorToken new twoFactorToken: ', twoFactorToken);
+  
   return twoFactorToken;
 }

@@ -12,10 +12,10 @@ import { createPasswordHash } from "@/utils/pass";
 
 
 export const signup = async (formData: SignUpFormType) => {
-  console.log("\x1b[33m", 'ACTION SignUp formData: ', "\x1b[0m", formData);
+  // console.log("\x1b[33m", 'ACTION SignUp formData: ', "\x1b[0m", formData);
 
   let validatedResult = SignUpFormSchema.safeParse(formData);
-  console.log("\x1b[33m", 'ACTION SignUp validatedResult: ', "\x1b[0m", validatedResult);
+  // console.log("\x1b[33m", 'ACTION SignUp validatedResult: ', "\x1b[0m", validatedResult);
   if (!validatedResult.success) {
     return {error: 'Your credentials invalid. Try again.'};
   }

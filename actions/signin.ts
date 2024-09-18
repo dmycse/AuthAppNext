@@ -15,7 +15,7 @@ import { getTwoFactorConfirmationByUserId } from "@/utils/twofactorconfirmation"
 
 
 export const signin = async (formData: SignInFormType) => {
-  console.log('\x1b[43m%s\x1b[0m','ACTION SignIn FormData', formData);
+  // console.log('\x1b[43m%s\x1b[0m','ACTION SignIn FormData', formData);
 
   let validatedResult = SignInFormSchema.safeParse(formData);
  
@@ -26,7 +26,7 @@ export const signin = async (formData: SignInFormType) => {
   let { email, password, code } = validatedResult.data;
 
   let existingUser = await getUserByEmail(email);
-  console.log('\x1b[43m%s\x1b[0m','ACTION SignIn ExistingUser', existingUser);
+  // console.log('\x1b[43m%s\x1b[0m','ACTION SignIn ExistingUser', existingUser);
   
   if (!existingUser?.email || !existingUser.password) {
     return {error: "User does not exist!"};
@@ -108,7 +108,7 @@ export const signin = async (formData: SignInFormType) => {
                   ? {error: 'Invalid credentials!' }
                   : {error: 'Something went wrong! Action Error 4'}
       }
-      console.log('\x1b[43m%s\x1b[0m','ACTION SignIn ERROR DETAILS:', error);
+      //console.log('\x1b[43m%s\x1b[0m','ACTION SignIn ERROR DETAILS:', error);
     throw error;
   }
  

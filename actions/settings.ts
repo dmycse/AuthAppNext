@@ -12,7 +12,7 @@ import { createPasswordHash, mathcUserPassword } from "@/utils/pass";
 
 
 export const settings = async (values: SettingsFormType) => {
-  console.log("\x1b[33m%s\x1b[0m",'ACTION Settings values: ', values);
+  // console.log("\x1b[33m%s\x1b[0m",'ACTION Settings values: ', values);
   let currentUser = await authUser();
 
   if (!currentUser) {
@@ -26,7 +26,7 @@ export const settings = async (values: SettingsFormType) => {
   }
 
   let validateValues = SettingsFormSchema.safeParse(values);
-  console.log("\x1b[33m%s\x1b[0m",'ACTION Settings validateValues: ', validateValues.data);
+  // console.log("\x1b[33m%s\x1b[0m",'ACTION Settings validateValues: ', validateValues.data);
   if (!validateValues.success) {
     return {error: 'Invalid data. Try again.'};
   }
@@ -98,7 +98,7 @@ export const settings = async (values: SettingsFormType) => {
   //   values.isTwoFactorEnabled = undefined;
   // }
 
-  console.log("\x1b[33m%s\x1b[0m", 'ACTION Settings dataForUpdate: ', dataForUpdate);
+  //console.log("\x1b[33m%s\x1b[0m", 'ACTION Settings dataForUpdate: ', dataForUpdate);
   await db.user.update({
     where: {id: dbUser.id},
     data: {...dataForUpdate}
@@ -107,7 +107,7 @@ export const settings = async (values: SettingsFormType) => {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       console.log("\x1b[31m%s\x1b[0m", 'ACTION Settings DB User Update Error: ', error.code);
     }
-    console.log("\x1b[31m%s\x1b[0m", 'ACTION Settings DB User Update Error: ', error);
+    // console.log("\x1b[31m%s\x1b[0m", 'ACTION Settings DB User Update Error: ', error);
     return {error: "Something went wrong!"}
   });
   
