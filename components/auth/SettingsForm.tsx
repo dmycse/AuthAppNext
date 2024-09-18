@@ -1,12 +1,15 @@
 'use client';
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { useSession } from "next-auth/react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SettingsFormSchema } from "@/schemas";
 import type { SettingsFormType } from "@/schemas";
 import { UserRole } from "@prisma/client";
+
+import { settings } from "@/actions/settings";
 
 import {
   Form, 
@@ -30,14 +33,13 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/auth/FormError";
 import { FormSuccess } from "@/components/auth/FormSuccess";
-
-import { settings } from "@/actions/settings";
-import { useSession } from "next-auth/react";
+import { RESPONSE_MSG_LIFETIME } from "@/constants";
 
 
 export const SettingsForm = () => {
   let {data} = useSession();
-  // console.log('SetttingsForm Session: ', data.user);
+  console.log('SetttingsForm Session: ', data?.user);
+
 
   let [success, setSuccess] = useState<string | undefined>('');
   let [error, setError] = useState<string | undefined>('');
@@ -50,16 +52,19 @@ export const SettingsForm = () => {
     defaultValues: {
       name: data?.user.name || undefined,
       email: data?.user.email || undefined,
-      password: undefined,
-      newPassword: undefined,
+      password: '',
+      newPassword: '' || undefined,
       role: data?.user.role || undefined,
       isTwoFactorEnabled: data?.user.isTwoFactorEnabled || undefined,
+      isOAuth: data?.user.isOAuth,
     }
   });
 
-  let { errors } = form.formState;
+  let { reset, getValues } = form;
+  let { errors, isDirty } = form.formState;
 
   let formSubmitHandler = (data: SettingsFormType) => {
+    console.log('SettingsForm formSubmitHandler data: ', data);
     startTransition( async () => {
       let response = await settings(data);
       console.log('Settings Action response: ', response);
@@ -70,16 +75,27 @@ export const SettingsForm = () => {
         update();
         setSuccess(response.success);
       }
+      reset(getValues(), {keepValues: true, keepDirty: false, keepDefaultValues: false});
     });
   };
 
-  let handleChangeCapture = () => {
-    setSuccess('');
-    setError('');
-  };
+
+  useEffect(() => {
+    let timeOutId: NodeJS.Timeout;
+
+    if (success) {
+      timeOutId = setTimeout(() => setSuccess(''), RESPONSE_MSG_LIFETIME);
+    } 
+    if (error) {
+      timeOutId = setTimeout(() => setError(''), RESPONSE_MSG_LIFETIME);
+    }
+    return () => clearTimeout(timeOutId);
+
+  }, [success, error]);
 
   console.log('SettingsForm state: ' , {error, success})
-  console.log('SettingsForm formState.errors: ', form.formState.errors )
+  console.log('SettingsForm formState.errors: ', errors )
+  console.log('SettingsForm formState.dirtyFields: ', form.formState.dirtyFields)
 
   return (
       <Form {...form}>
@@ -100,83 +116,83 @@ export const SettingsForm = () => {
                       placeholder="Edit your name"
                       disabled={isPending}
                       className={errors.name && "border-red-500"}
-                      onChangeCapture={handleChangeCapture}  
                       {...field}
                     />
-                  </FormControl> 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="space-y-4">
-            <FormField 
-              control={form.control}
-              name="email"
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel className="text-black">Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email" 
-                      placeholder="youremail@example.com"
-                      disabled={isPending}
-                      onChangeCapture={handleChangeCapture}
-                      className={errors.email && "border-red-500"} 
-                      {...field} 
-                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              )}
+              )}  
             />
           </div>
-          <div className="space-y-4">
-            <FormField 
-              control={form.control}
-              name="password"
-              render={({field}) => (
-                <FormItem className="mb-6">
-                  <FormLabel className="text-black">Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password" 
-                      placeholder="*******"
-                      pass={field.value}
-                      disabled={isPending}
-                      onChangeCapture={handleChangeCapture}
-                      className={errors.password && "border-red-500"}  
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="space-y-4">
-            <FormField 
-              control={form.control}
-              name="newPassword"
-              render={({field}) => (
-                <FormItem className="mb-6">
-                  <FormLabel className="text-black">New Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password" 
-                      placeholder="*******"
-                      pass={field.value}
-                      disabled={isPending}
-                      onChangeCapture={handleChangeCapture}
-                      className={errors.password && "border-red-500"}  
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          {!data?.user?.isOAuth && (
+            <>
+              <div className="space-y-4">
+                <FormField 
+                  control={form.control}
+                  name="email"
+                  render={({field}) => (
+                    <FormItem>
+                      <FormLabel className="text-black">Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email" 
+                          placeholder="youremail@example.com"
+                          disabled={isPending}
+                          className={errors.email && "border-red-500"} 
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="space-y-4">
+                <FormField 
+                  control={form.control}
+                  name="password"
+                  render={({field}) => (
+                    <FormItem className="mb-6">
+                      <FormLabel className="text-black">Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password" 
+                          placeholder="*******"
+                          pass={field.value}
+                          disabled={isPending}
+                          className={errors.password && "border-red-500"}  
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="space-y-4">
+                <FormField 
+                  control={form.control}
+                  name="newPassword"
+                  render={({field}) => (
+                    <FormItem className="mb-6">
+                      <FormLabel className="text-black">New Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password" 
+                          placeholder="*******"
+                          pass={field.value}
+                          disabled={isPending}
+                          className={errors.password && "border-red-500"}  
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </>
+          )}
           <div className="space-y-4">
             <FormField 
               control={form.control}
@@ -204,34 +220,37 @@ export const SettingsForm = () => {
               )}
             />
           </div>
-          <div className="space-y-4">
-            <FormField 
-              control={form.control}
-              name="isTwoFactorEnabled"
-              render={({field}) => (
-                <FormItem 
-                  className="p-3 flex flex-row justify-between items-center border rounded-md shadow-sm"
-                >
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-black">Two Factor Enabled</FormLabel>
-                    <FormDescription className="text-black">Enable Two Factor authentication for your account</FormDescription> 
-                  </div>
-                  <Switch
-                    disabled={isPending}
-                    onCheckedChange={field.onChange}
-                    checked={field.value}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          {!data?.user?.isOAuth && (
+            <div className="space-y-4">
+              <FormField 
+                control={form.control}
+                name="isTwoFactorEnabled"
+                render={({field}) => (
+                  <FormItem 
+                    className="p-3 flex flex-row justify-between items-center border rounded-md shadow-sm"
+                  >
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-black">Two Factor Enabled</FormLabel>
+                      <FormDescription className="text-black">Enable Two Factor authentication for your account</FormDescription> 
+                    </div>
+                    <Switch
+                      disabled={isPending}
+                      onCheckedChange={field.onChange}
+                      checked={field.value}
+                      className="data-[state=checked]:bg-sky-500"
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
           <FormError message={error} />
           <FormSuccess message={success} />
           <Button 
             type="submit" 
             className="w-full disabled:opacity-40"
-            disabled={isPending}
+            disabled={isPending || !isDirty}
           >
             Save
           </Button>
