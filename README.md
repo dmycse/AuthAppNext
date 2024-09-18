@@ -3,7 +3,7 @@
   <h3 align="center">Auth App Next</h3>
 
    <div align="center">
-     This Authentication App buld on <a href="https://authjs.dev/" target="_blank"><b>AuthJS v.5</b> </a>and <a href="https://nextjs.org/" target="_blank"><b>NextJS v.14</b></a>
+     This Authentication App buld on <a href="https://authjs.dev/" target="_blank"><b>AuthJS v.5</b> </a>and <a href="https://nextjs.org/" target="_blank"><b>NextJS v.14+</b></a>
     </div>
 </div>
 
