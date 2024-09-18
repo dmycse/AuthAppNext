@@ -1,0 +1,1 @@
+export const RESPONSE_MSG_LIFETIME = 3000;
