@@ -20,6 +20,12 @@ export const Navbar = () => {
           variant={pathname === '/server' ? 'default' : 'outline'}
           asChild 
         >
+          <Link href="/">Home</Link>
+      </Button>
+      <Button 
+          variant={pathname === '/server' ? 'default' : 'outline'}
+          asChild 
+        >
           <Link href="/server">Server</Link>
         </Button>
         <Button 
