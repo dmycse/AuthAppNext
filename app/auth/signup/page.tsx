@@ -1,8 +1,11 @@
+import { SuspenseBoundary } from "@/components/auth/SuspenseBoundary";
 import { SignUpForm } from "@/components/auth/SignUpForm";
 
 
 export default function SignUpPage() {
   return (
-    <SignUpForm />
+    <SuspenseBoundary>
+      <SignUpForm />
+    </SuspenseBoundary>
   )
 }
