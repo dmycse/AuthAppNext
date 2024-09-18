@@ -3,6 +3,9 @@
 import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";  
+import { SignInForm } from "../auth/SignInForm";
+
 interface SignInButtonProps {
   children: ReactNode;
   mode?: 'modal' | 'redirect';
@@ -19,7 +22,14 @@ export default function SignInButton({children, mode='redirect', asChild}: SignI
 
   if (mode === 'modal') {
     return (
-      <span>TODO: Implement Modal</span>
+      <Dialog>
+        <DialogTrigger asChild={asChild}>
+          {children}
+        </DialogTrigger>
+        <DialogContent className="p-0 w-auto bg-transparent border-none">
+          <SignInForm />
+        </DialogContent>
+      </Dialog>
     )
   }
 
