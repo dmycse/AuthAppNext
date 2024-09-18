@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 import { FcGoogle } from "react-icons/fc";
@@ -12,12 +13,15 @@ import { BeatLoader } from "react-spinners";
 
 export const Social = () => {
 
+  let searchParams = useSearchParams();
+  let callbackUrl = searchParams.get("callbackUrl");
+
   let [isPending, setIsPending] = useState(false);
 
   let onClickHandler = async (provider: "google" | "github") => {
     setIsPending(true);
     await signIn(provider, {
-      callbackUrl: DEFAULT_SIGNIN_REDIRECT
+      callbackUrl: callbackUrl ?? DEFAULT_SIGNIN_REDIRECT
     })
   };
   

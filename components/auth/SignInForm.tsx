@@ -27,17 +27,20 @@ import { FormSuccess } from "@/components/auth/FormSuccess";
 
 import { signin } from "@/actions/signin";
 import { RESPONSE_MSG_LIFETIME } from "@/constants";
+import { DEFAULT_SIGNIN_REDIRECT } from "@/routes";
 
 
 export const SignInForm = () => {
 
   let searchParams = useSearchParams();
+  let callbackUrl = searchParams.get("callbackUrl");
   let errorUrlWarning = searchParams.get("error") === "OAuthAccountNotLinked"
     ? "Email is already in use! Use another one."
     : "";
-
-    let router = useRouter();
-    let [isPending, startTransition] = useTransition();
+  
+  let router = useRouter();
+  
+  let [isPending, startTransition] = useTransition();
 
   let [success, setSuccess] = useState<string | undefined>('');
   let [error, setError] = useState<string | undefined>('');
@@ -58,18 +61,17 @@ export const SignInForm = () => {
       console.log('SIGNIN Form Action response: ', response);
 
       if (!response) {
-        setError('Something went wrong! Form Error 1');
+        setError('Something went wrong!');
         return; 
       }
       
       if (response?.error) {
-        // form.reset();
         setError(response.error);
       }
 
       if (response?.success) {
         form.reset();
-        router.push('/settings');
+        router.push(callbackUrl ?? DEFAULT_SIGNIN_REDIRECT);
         setSuccess(response.success);
       }
         
