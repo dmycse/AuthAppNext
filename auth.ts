@@ -6,7 +6,8 @@ import { db } from "@/lib/db";
 import { getUserById } from "@/utils/user";
 import { getTwoFactorConfirmationByUserId } from "@/utils/twofactorconfirmation";
 import { get } from "http";
-import { getAccountById } from "./utils/account";
+import { getAccountById } from "@/utils/account";
+import { PROVIDER_TYPE } from "@/constants";
 
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
@@ -75,7 +76,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       token.role = currentUser.role;
       token.id = currentUser.id;
       token.isTwoFactorEnabled = currentUser.isTwoFactorEnabled as boolean;
-      token.isOAuth = currentAccount?.type !== "credentials";
+      token.isOAuth = !PROVIDER_TYPE.includes("credentials");
   
       console.log("\x1b[44m%s\x1b[0m", "AUTH JWT Token: ", token);
       return token;
