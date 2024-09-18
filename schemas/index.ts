@@ -28,35 +28,37 @@ export type NewPasswordFormType = z.infer<typeof NewPasswordFormSchema>;
 export const SettingsFormSchema = z.object({
   name: z.string().min(2, "Name is required").optional(),
   email: z.string().email("Invalid email").toLowerCase().optional(),
-  password: z.string().min(1, "Password is required").min(6, "Password must be at least 6 characters").optional(),
-  newPassword: z.string().min(1, "Password is required").min(6, "Password must be at least 6 characters").optional(),
+  password: z.optional(z.string().min(6, "Password must be at least 6 characters")).or(z.literal('')),
+  newPassword: z.optional(z.string().min(6, "Password must be at least 6 characters")).or(z.literal('')),
   isTwoFactorEnabled: z.boolean().optional(),
+  isOAuth: z.boolean().optional(),
   role: z.enum(["Admin", "User"]),
 })
-  .refine(data => {
-    if (!data.password)return false;
-    return true;
-   }, {
-     message: "Password is required!",
-     path: ["newPassword"]
-   }
-  )
-  .refine(data => {
-    if (!data.newPassword) return false;
-    return true;
-   }, {
-     message: "New Password is required!",
-     path: ["newPassword"]
-   }
-  )
-  .refine(data => {
-    if (data.newPassword === data.password) return false;
-    return true;
-   }, {
-     message: "New Password has not match the existing password",
-     path: ["newPassword"]
-   }
-  )
+  // .refine(data => {
+  //   if (!data.password) return false;
+  //   return true;
+  //   }, {
+  //     message: "Password is required!",
+  //     path: ["password"]
+  //   }
+  // )
+  // .refine(data => {
+  //   if (!data.newPassword) return false;
+  //   return true;
+  //  }, {
+  //    message: "New Password is required!",
+  //    path: ["newPassword"]
+  //  }
+  // )
+  // .refine(data => {
+  //   if (data.newPassword === data.password) return false;
+  //   return true;
+  //  }, {
+  //    message: "New Password has not match the existing password",
+  //    path: ["newPassword"]
+  //  }
+  // )
+
 export type SettingsFormType = z.infer<typeof SettingsFormSchema>;
 
 
