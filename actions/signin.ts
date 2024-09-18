@@ -97,7 +97,9 @@ export const signin = async (formData: SignInFormType) => {
       email,
       password,
       redirect: false,
-      // redirectTo: '/settings'
+      // redirect: true - issue an error while signing in
+      // callbackUrl - not working
+      // callbackUrl: callbackUrl || DEFAULT_SIGNIN_REDIRECT
     })
 
   } catch (error) {
