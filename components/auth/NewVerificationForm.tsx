@@ -6,6 +6,7 @@ import { BeatLoader } from 'react-spinners';
 
 import { verificationToken } from '@/actions/verification-token';
 
+import { SuspenseBoundary } from "@/components/auth/SuspenseBoundary";
 import { CardWrapper } from "@/components/custom_ui/CardWrapper";
 import { FormSuccess } from '@/components/auth/FormSuccess';
 import { FormError } from '@/components/auth/FormError';
@@ -42,16 +43,18 @@ export const NewVerificationForm = () => {
   
   
   return (
-    <CardWrapper
-      headerLabel="Confirming your verification"
-      backButtonLabel="Go to SignIn"
-      backButtonHref="/auth/signin"
-    >
-      <div className="w-full flex justify-center items-center">
-        {!success && !error && <BeatLoader />}
-        <FormSuccess message={success} />
-        <FormError message={error} />
-      </div>
-    </CardWrapper>
+    <SuspenseBoundary>
+      <CardWrapper
+        headerLabel="Confirming your verification"
+        backButtonLabel="Go to SignIn"
+        backButtonHref="/auth/signin"
+      >
+        <div className="w-full flex justify-center items-center">
+          {!success && !error && <BeatLoader />}
+          <FormSuccess message={success} />
+          <FormError message={error} />
+        </div>
+      </CardWrapper>
+    </SuspenseBoundary>
   )
 }
