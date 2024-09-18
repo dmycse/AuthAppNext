@@ -75,7 +75,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       token.role = currentUser.role;
       token.id = currentUser.id;
       token.isTwoFactorEnabled = currentUser.isTwoFactorEnabled as boolean;
-      token.isOAuth = currentAccount?.type === "oauth";
+      token.isOAuth = currentAccount?.type !== "credentials";
   
       console.log("\x1b[44m%s\x1b[0m", "AUTH JWT Token: ", token);
       return token;
