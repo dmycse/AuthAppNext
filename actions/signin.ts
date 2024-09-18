@@ -27,6 +27,7 @@ export const signin = async (formData: SignInFormType) => {
 
   let existingUser = await getUserByEmail(email);
   console.log('\x1b[43m%s\x1b[0m','ACTION SignIn ExistingUser', existingUser);
+  
   if (!existingUser?.email || !existingUser.password) {
     return {error: "User does not exist!"};
   }
