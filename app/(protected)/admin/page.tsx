@@ -11,7 +11,7 @@ export default async function AdminPage() {
   let role = await authRole();
 
   return (
-    <Card className="w-[600px] shadow-md">
+    <Card className="flex-1 w-[600px] shadow-md">
       <CardHeader>
         <p className="text-2xl font-semibold text-center">
           Admin Panel

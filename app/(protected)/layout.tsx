@@ -14,7 +14,7 @@ export default async function ProtectedLayout({children}: ProtectedLayoutProps) 
   return (
     <SessionProvider session={session}>
       <div
-        className="w-full h-full flex flex-col items-center justify-center gap-y-10 bg-sky-500"
+        className="p-5 w-full min-h-full flex flex-col items-center justify-center gap-y-10 bg-sky-500"
       >
         <Navbar />
         {children}
