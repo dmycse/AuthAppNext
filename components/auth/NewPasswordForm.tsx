@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
 
@@ -24,6 +24,7 @@ import { FormError } from "@/components/auth/FormError";
 import { FormSuccess } from "@/components/auth/FormSuccess";
 
 import { newPassword } from "@/actions/new-password";
+import { RESPONSE_MSG_LIFETIME } from "@/constants";
 
 
 export const NewPasswordForm = () => {
@@ -57,10 +58,20 @@ export const NewPasswordForm = () => {
 
   let { errors } = form.formState;
 
-  let handleChangeCapture = () => {
-    setSuccess('');
-    setError('');
-  };
+  
+  useEffect(() => {
+    let timeOutId: NodeJS.Timeout;
+
+    if (success) {
+      timeOutId = setTimeout(() => setSuccess(''), RESPONSE_MSG_LIFETIME);
+    } 
+    if (error) {
+      timeOutId = setTimeout(() => setError(''), RESPONSE_MSG_LIFETIME);
+    }
+    return () => clearTimeout(timeOutId);
+
+  }, [success, error]);
+
 
   console.log('NewPasswordForm state: ' , {error, success});
   console.log('NewPasswordForm errors: ', form.formState.errors);
@@ -90,7 +101,6 @@ export const NewPasswordForm = () => {
                       placeholder="*******"
                       pass={field.value}
                       disabled={isPending}
-                      onChangeCapture={handleChangeCapture} 
                       className={errors.password && "border-red-500"}
                       {...field} 
                     />
@@ -105,7 +115,7 @@ export const NewPasswordForm = () => {
           <Button 
             type="submit" 
             className="w-full disabled:opacity-40"
-            disabled={isPending}
+            disabled={isPending || !form.formState.isDirty}
           >
             Reset password
           </Button>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +23,7 @@ import { FormError } from "@/components/auth/FormError";
 import { FormSuccess } from "@/components/auth/FormSuccess";
 
 import { signup } from "@/actions/signup";
+import { RESPONSE_MSG_LIFETIME } from "@/constants";
 
 
 export const SignUpForm = () => {
@@ -53,10 +54,19 @@ export const SignUpForm = () => {
     });
   };
 
-  let handleChangeCapture = () => {
-    setSuccess('');
-    setError('');
-  };
+  useEffect(() => {
+    let timeOutId: NodeJS.Timeout;
+
+    if (success) {
+      timeOutId = setTimeout(() => setSuccess(''), RESPONSE_MSG_LIFETIME);
+    } 
+    if (error) {
+      timeOutId = setTimeout(() => setError(''), RESPONSE_MSG_LIFETIME);
+    }
+    return () => clearTimeout(timeOutId);
+
+  }, [success, error]);
+
 
   console.log('SIGNUp Form state: ' , {error, success})
   console.log('SIGNUp Form errors: ', form.formState.errors )
@@ -85,7 +95,6 @@ export const SignUpForm = () => {
                       type="text" 
                       placeholder="your name"
                       disabled={isPending}
-                      onChangeCapture={handleChangeCapture} 
                       className={errors.name && "border-red-500"} 
                       {...field}
                     />
@@ -107,7 +116,6 @@ export const SignUpForm = () => {
                       type="email" 
                       placeholder="youremail@example.com"
                       disabled={isPending}
-                      onChangeCapture={handleChangeCapture}
                       className={errors.email && "border-red-500"} 
                       {...field} 
                     />
@@ -130,7 +138,6 @@ export const SignUpForm = () => {
                       placeholder="*******"
                       pass={field.value}
                       disabled={isPending}
-                      onChangeCapture={handleChangeCapture}
                       className={errors.password && "border-red-500"}  
                       {...field} 
                     />
@@ -145,7 +152,7 @@ export const SignUpForm = () => {
           <Button 
             type="submit" 
             className="w-full disabled:opacity-40"
-            disabled={isPending}
+            disabled={isPending || !form.formState.isDirty}
           >
             Sign Up
           </Button>

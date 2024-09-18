@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -26,6 +26,7 @@ import { FormError } from "@/components/auth/FormError";
 import { FormSuccess } from "@/components/auth/FormSuccess";
 
 import { signin } from "@/actions/signin";
+import { RESPONSE_MSG_LIFETIME } from "@/constants";
 
 
 export const SignInForm = () => {
@@ -62,7 +63,7 @@ export const SignInForm = () => {
       }
       
       if (response?.error) {
-        form.reset();
+        // form.reset();
         setError(response.error);
       }
 
@@ -80,10 +81,18 @@ export const SignInForm = () => {
 
   let { errors } = form.formState;
 
-  let handleChangeCapture = () => {
-    setSuccess('');
-    setError('');
-  };
+  useEffect(() => {
+    let timeOutId: NodeJS.Timeout;
+
+    if (success) {
+      timeOutId = setTimeout(() => setSuccess(''), RESPONSE_MSG_LIFETIME);
+    } 
+    if (error) {
+      timeOutId = setTimeout(() => setError(''), RESPONSE_MSG_LIFETIME);
+    }
+    return () => clearTimeout(timeOutId);
+
+  }, [success, error]);
 
   console.log('SIGNIN Form state: ' , {error, success, twoFactor})
   console.log('SIGNIN Form errors: ', form.formState.errors )
@@ -113,7 +122,6 @@ export const SignInForm = () => {
                       type="email" 
                       placeholder="youremail@example.com"
                       disabled={isPending}
-                      onChangeCapture={handleChangeCapture}
                       className={errors.email && "border-red-500"} 
                       {...field}
                     />
@@ -146,7 +154,6 @@ export const SignInForm = () => {
                       placeholder="*******"
                       pass={field.value}
                       disabled={isPending}
-                      onChangeCapture={handleChangeCapture} 
                       className={errors.password && "border-red-500"}
                       {...field} 
                     />
@@ -168,7 +175,7 @@ export const SignInForm = () => {
                       <Input
                         {...field}
                         type="text" 
-                        placeholder="- - - - - -"
+                        placeholder="******"
                         disabled={isPending}
                         className={errors.code && "border-red-500"} 
                       />
@@ -189,7 +196,7 @@ export const SignInForm = () => {
           <Button 
             type="submit" 
             className="w-full disabled:opacity-40"
-            disabled={isPending}
+            disabled={isPending || !form.formState.isDirty}
           >
             SignIn
           </Button>
