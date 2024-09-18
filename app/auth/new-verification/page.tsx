@@ -1,7 +1,11 @@
+import { SuspenseBoundary } from '@/components/auth/SuspenseBoundary';
 import { NewVerificationForm } from '@/components/auth/NewVerificationForm';
+
 
 export default function NewVerification() {
   return (
-    <NewVerificationForm />
+    <SuspenseBoundary>
+      <NewVerificationForm />
+    </SuspenseBoundary>
   )
 }

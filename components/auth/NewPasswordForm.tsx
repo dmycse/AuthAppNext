@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useTransition} from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
 
@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from "@/components/ui/input";
 
-import { SuspenseBoundary } from "@/components/auth/SuspenseBoundary";
 import { CardWrapper } from "@/components/custom_ui/CardWrapper";
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/auth/FormError";
@@ -45,7 +44,8 @@ export const NewPasswordForm = () => {
   });
 
   let formSubmitHandler = (data: NewPasswordFormType) => {
-    console.log('NewPasswordForm Input data: ', data);
+    //console.log('NewPasswordForm Input data: ', data);
+
     form.reset();
     startTransition(async () => {
       let response = await newPassword(data, token!);
@@ -74,56 +74,53 @@ export const NewPasswordForm = () => {
   }, [success, error]);
 
 
-  console.log('NewPasswordForm state: ' , {error, success});
-  console.log('NewPasswordForm errors: ', form.formState.errors);
-
+  // console.log('NewPasswordForm state: ' , {error, success});
+  // console.log('NewPasswordForm errors: ', form.formState.errors);
 
   return (
-    <SuspenseBoundary>
-      <CardWrapper
-        headerLabel="Enter a new password"
-        backButtonLabel="Back to sign in"
-        backButtonHref="/auth/signin"
-      >
-        <Form {...form}>
-          <form 
-            onSubmit={form.handleSubmit(formSubmitHandler)}
-            className="mb-6 space-y-4"
+    <CardWrapper
+      headerLabel="Enter a new password"
+      backButtonLabel="Back to sign in"
+      backButtonHref="/auth/signin"
+    >
+      <Form {...form}>
+        <form 
+          onSubmit={form.handleSubmit(formSubmitHandler)}
+          className="mb-6 space-y-4"
+        >
+          <div className="space-y-4">
+          <FormField 
+              control={form.control}
+              name="password"
+              render={({field}) => (
+                <FormItem className="mb-6">
+                  <FormLabel className="text-black">Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password" 
+                      placeholder="*******"
+                      pass={field.value}
+                      disabled={isPending}
+                      className={errors.password && "border-red-500"}
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <FormError message={error} />
+          <FormSuccess message={success} />
+          <Button 
+            type="submit" 
+            className="w-full disabled:opacity-40"
+            disabled={isPending || !form.formState.isDirty}
           >
-            <div className="space-y-4">
-            <FormField 
-                control={form.control}
-                name="password"
-                render={({field}) => (
-                  <FormItem className="mb-6">
-                    <FormLabel className="text-black">Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password" 
-                        placeholder="*******"
-                        pass={field.value}
-                        disabled={isPending}
-                        className={errors.password && "border-red-500"}
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormError message={error} />
-            <FormSuccess message={success} />
-            <Button 
-              type="submit" 
-              className="w-full disabled:opacity-40"
-              disabled={isPending || !form.formState.isDirty}
-            >
-              Reset password
-            </Button>
-          </form>
-        </Form>
-      </CardWrapper>
-    </SuspenseBoundary>
+            Reset password
+          </Button>
+        </form>
+      </Form>
+    </CardWrapper>
   ) 
 }

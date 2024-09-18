@@ -43,18 +43,16 @@ export const NewVerificationForm = () => {
   
   
   return (
-    <SuspenseBoundary>
-      <CardWrapper
-        headerLabel="Confirming your verification"
-        backButtonLabel="Go to SignIn"
-        backButtonHref="/auth/signin"
-      >
-        <div className="w-full flex justify-center items-center">
-          {!success && !error && <BeatLoader />}
-          <FormSuccess message={success} />
-          <FormError message={error} />
-        </div>
-      </CardWrapper>
-    </SuspenseBoundary>
+    <CardWrapper
+      headerLabel="Confirming your verification"
+      backButtonLabel="Go to SignIn"
+      backButtonHref="/auth/signin"
+    >
+      <div className="w-full flex justify-center items-center">
+        {!success && !error && <BeatLoader />}
+        <FormSuccess message={success} />
+        <FormError message={error} />
+      </div>
+    </CardWrapper>
   )
 }
