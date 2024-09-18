@@ -58,22 +58,24 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     },
     async jwt({ token, user }) {
       if (!token.sub) return token;
-      
+
       // user is available during sign-in process only
       // console.log("JWT Token user: ", user);
       
-      let currentUser = await getUserById(token.id as string);
+      let currentUser = await getUserById(token.sub as string);
+      
+      if (!currentUser) {
+        return token;
+      }
+  
+      let currentAccount = await getAccountById(token.id as string);
 
-      if (!currentUser) return token;
-    
-      let currentAccount = await getAccountById(currentUser.id);
-
-      token.isOAuth = !!currentAccount;
       token.name = currentUser.name;
       token.email = currentUser.email;
       token.role = currentUser.role;
       token.id = currentUser.id;
       token.isTwoFactorEnabled = currentUser.isTwoFactorEnabled as boolean;
+      token.isOAuth = currentAccount?.type === "oauth";
   
       console.log("\x1b[44m%s\x1b[0m", "AUTH JWT Token: ", token);
       return token;
